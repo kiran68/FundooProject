@@ -5,20 +5,27 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-  export const registerUser = async (body) => {
-  const isExist = await User.findOne({  email: body.email  });
+export const registerUser = async (body) => {
+  const isExist = await User.findOne({ email: body.email });
 
   if (isExist) {
     throw new Error('User already exists');
-  }
-else {
-  const hashPassword =  await bcrypt.hash(body.password, 10);
-  body.password = hashPassword;
+  } else {
+    const hashPassword = await bcrypt.hash(body.password, 10);
+    body.password = hashPassword;
 
-  const data = await User.create(body);
-  return data;
-}
+    const data = await User.create(body);
+
+    const response = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+    };
+
+    return response;
+  }
 };
+
 
 
 export const loginUser = async (body) => {
